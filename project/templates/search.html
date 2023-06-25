@@ -1,0 +1,41 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %} Find News {% endblock title %}
+
+{% load custom_filters %}
+
+{% block content %}
+
+<form method="GET">
+    {{ filter.form }} <!-- Форму от фильтров за нас сделает Django. А вот кнопку, увы, придётся делать самому -->
+    <input type="submit" value="Найти">
+</form>
+<div class="col-xl-8">
+            {% if filter.qs %}
+
+                <!--Вывод новостей-->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Заголовок</th>
+                            <th>Дата публикации</th>
+                            <th>Текст</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in newslist %}
+                            <tr>
+                                <td><a href="{% url 'news_detail' post.pk %}">{{ post.title }}</a></td>
+                                <td>{{ post.dateCreation|date:'d.m.Y H:i' }}</td>
+                                <td align="left">{{ post.text|censor|preview }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+            {% else %}
+                <h5 class='text-center my-5'>Ничего не найдено ....</h5>
+            {% endif %}
+</div>
+{% endblock content %}

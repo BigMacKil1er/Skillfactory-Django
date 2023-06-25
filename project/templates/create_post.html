@@ -1,0 +1,13 @@
+<! -- наследование шаблона default -->
+{% extends 'flatpages/default.html' %}
+
+{% block title %} Post List {% endblock title %}
+
+{% block content %}
+<h3>Новый пост</h3>
+<form method="POST" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create post" class="btn btn-primary mt-2">
+</form>
+{% endblock content %}
