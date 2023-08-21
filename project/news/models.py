@@ -7,7 +7,7 @@ class Author(models.Model):
     ratingAuthor = models.SmallIntegerField(default=0)
 
     def __str__(self):
-        return f'автор: {self.authorUser.username.title()}'
+        return f'{self.authorUser.username.title()}'
     def update_rating(self):
         postRat = self.post_set.all().aggregate(postRating=Sum('rating'))
         pRat = 0
@@ -39,7 +39,7 @@ class Post(models.Model):
     rating = models.SmallIntegerField(default=0)
 
     def __str__(self):
-        return self.categoryType
+        return f'{self.categoryType} {self.author},  Название: {self.title} '
     def like(self):
         self.rating += 1
         self.save()

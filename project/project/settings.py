@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'fpages',
     'static',
     'news',
-    'accounts'
+    'accounts',
+    'sign',
+    'protected'
 ]
 SITE_ID = 1
 
@@ -84,6 +86,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+LOGIN_URL = '/sign/login/'
+LOGIN_REDIRECT_URL = '/news'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

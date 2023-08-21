@@ -1,0 +1,22 @@
+{% extends 'flatpages/main.html' %}
+
+{% block title %}
+Register
+{% endblock title %}
+{% block content %}
+<h2>
+ Войти в систему
+</h2>
+
+<form method="post" class="py-3">
+
+ {% csrf_token %}
+
+ <table>
+ {{ form.as_table }}
+ </table>
+ <button class="btn btn-primary" value="Send">
+   Зарегистрировать
+ </button>
+</form>
+{% endblock content %}
