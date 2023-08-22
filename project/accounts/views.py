@@ -23,7 +23,7 @@ class LoginView(FormView):
    model = User
    form_class = LoginForm
    template_name = 'registration/login.html'
-   success_url = '/'
+   success_url = '/news'
   
    def form_valid(self, form):
        username = form.cleaned_data.get('username')
