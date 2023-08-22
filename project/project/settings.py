@@ -46,8 +46,6 @@ INSTALLED_APPS = [
     'static',
     'news',
     'accounts',
-    'sign',
-    'protected'
 ]
 SITE_ID = 1
 
