@@ -91,8 +91,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
+ACCOUNT_FORMS = {'signup': 'accounts.forms.BasicSignupForm'}
 
-LOGIN_URL = '/sing/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/news'
 
 ACCOUNT_EMAIL_REQUIRED = True

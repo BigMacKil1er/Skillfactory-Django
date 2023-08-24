@@ -14,8 +14,8 @@ class RegisterView(CreateView):
    def form_valid(self, form):
        user = form.save()
        # group = Group.objects.get(name='my_group') # Обращаемся к БД, находим нужную группу. Может оказаться, что такой группы в БД нет. Тогда получим ошибку. Надёжнее использовать метод get_or_create. Обратите внимание, что этот метод возвращает кортеж, поэтому мы обращаемся к первому элементу кортежа через скобки.
-    #    group = Group.objects.get_or_create(name='common')[0]
-    #    user.groups.add(group)
+       group = Group.objects.get_or_create(name='common')[0]
+       user.groups.add(group)
        user.save()
        return super().form_valid(form)
 
