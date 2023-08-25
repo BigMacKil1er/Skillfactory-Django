@@ -91,7 +91,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
-ACCOUNT_FORMS = {'signup': 'accounts.forms.BasicSignupForm'}
+
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/news'
@@ -101,7 +101,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-
+ACCOUNT_FORMS = {'signup': 'accounts.forms.CommonSignupForm'}
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

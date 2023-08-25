@@ -6,6 +6,7 @@ from django.contrib.auth.models import User, Group
 from django.views.generic.edit import CreateView
 from .forms import RegisterForm, LoginForm
 
+
 class RegisterView(CreateView):
    model = User
    form_class = RegisterForm
@@ -40,3 +41,4 @@ class LogoutView(TemplateView):
    def get(self, request, *args, **kwargs):
        logout(request)
        return super().get(request, *args, **kwargs)
+   

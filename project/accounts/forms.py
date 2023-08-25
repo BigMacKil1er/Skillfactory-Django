@@ -5,11 +5,12 @@ from django.contrib.auth.models import Group
 from allauth.account.forms import SignupForm
 
 
-class BasicSignupForm(SignupForm):
+class CommonSignupForm(SignupForm):
     def save(self, request):
-        user = super(BasicSignupForm, self).save(request)
-        basic_group = Group.objects.get_or_create(name='common')[0]
-        basic_group.user_set.add(user)
+        user = super(CommonSignupForm, self).save(request)
+        common_group = Group.objects.get_or_create(name='common')[0]
+        common_group.user_set.add(user)
+        common_group.save()
         return user
    
 class RegisterForm(UserCreationForm):

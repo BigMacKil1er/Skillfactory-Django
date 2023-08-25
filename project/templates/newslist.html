@@ -9,6 +9,16 @@
 {% block content %}
     <h1>Список новостей ({{ news_count }})</h1>
     <hr>
+    {% if is_not_author %}
+
+        <a class="btn btn-info" href="{% url 'upgrade' %}">
+            Стать автором!
+        </a>
+    {% else %}
+        <h3>
+            Вы автор!
+    </h3>
+    {% endif %}
     {% if newslist %}
         <table class="table table-striped">
             <thead>
@@ -24,13 +34,21 @@
                         <td><a href="{% url 'news_detail' post.pk %}">{{ post.title }}</a></td>
                         <td>{{ post.dateCreation|date:'d.m.Y H:i' }}</td>
                         <td align="left">{{ post.text|censor|preview }}</td>
+                        {% if post.author.authorUser_id == request.user.id %}
                         <td><a href="{% url 'edit_post' post.pk %}">Edit</a></td>
                         <td><a href="{% url 'delete_post' post.pk %}">Delete</a></td>
+                        {% else %}
+                        <td></td>
+                        <td></td>
+                        {% endif %}
+                        
+                        
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-    <a class="btn btn-primary" href="{% url 'new_post' %}">Create Post</a>
+        {% if not is_not_author %}<a class="btn btn-primary" href="{% url 'new_post' %}">Create Post</a>{% endif %}
+    
     {% else %}
         <div class="alert alert-info">
             <h2>Новостей нет!</h2>
