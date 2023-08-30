@@ -1,17 +1,26 @@
 # импортируем класс, который говорит нам о том, что в этом представлении мы будем выводить список объектов из БД
+from typing import Any, Dict
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models.query import QuerySet
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+
 # from django.shortcuts import render
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from .forms import SubscribeForm
 from .models import Author, Category, Post, PostCategory, Comment
 from datetime import datetime
 from django.core.paginator import Paginator
-from django.urls import reverse_lazy
+from django.urls import resolve, reverse_lazy
 from .filters import PostFilter
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+
+DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
 class AuthorsList(LoginRequiredMixin, ListView):
     model = Author
@@ -53,26 +62,77 @@ class NewsList(LoginRequiredMixin, ListView):
         return context
 
 
-def get_users_with_edit_permission():
-    content_type = ContentType.objects.get_for_model(Post)
-    edit_post_permission = Permission.objects.create(
-        codename='authors',
-        name='Authors',
-        content_type = content_type
-    )
+# def get_users_with_edit_permission():
+#     content_type = ContentType.objects.get_for_model(Post)
+#     edit_post_permission = Permission.objects.create(
+#         codename='authors',
+#         name='Authors',
+#         content_type = content_type
+#     )
 
-    # Получаем всех пользователей, которые имеют право на редактирование постов
-    users_with_edit_permission = User.objects.filter(user_permissions=edit_post_permission)
+#     # Получаем всех пользователей, которые имеют право на редактирование постов
+#     users_with_edit_permission = User.objects.filter(user_permissions=edit_post_permission)
     
-    return users_with_edit_permission
+#     return users_with_edit_permission
+
+class PostCategoryView(DetailView):
+    model = Post
+    template_name = 'category.html'
+    context_object_name = 'posts'
+    ordering = ['-created_at']
+    paginate_by = 10
+    def get_queryset(self):
+        self.id = resolve(self.request.path_info).kwargs['pk']
+        c = Category.objects.get(id=self.id)
+        querySet = Post.objects.filter(postCategory=c)
+        # print(querySet)
+        return querySet
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        category = Category.objects.get(id=self.id)
+        print(user)
+        subscribed = category.subscribers.filter(email=user.email)
+        print(subscribed)
+        if not subscribed:
+            context['category'] = category
+        return context
 
 class PostCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     permission_required = ('auth.authors')
     model = Post
     context_object_name = 'new_post'
     template_name = 'create_post.html'
-    fields = ('author', 'title', 'text', 'categoryType')
+    fields = ('author', 'title', 'text', 'categoryType', 'postCategory')
     success_url = reverse_lazy('news')
+
+    @staticmethod
+    def send_message(username, email, title, text):
+        html_email_message = render_to_string('new_post_email_notification.html', {'username': username, 'title': title,'text': text})
+        msg = EmailMultiAlternatives(
+            subject=title,
+            body=text,
+            from_email='artjom.varibrus@yandex.ru',
+            to=[email]
+        )
+        msg.attach_alternative(html_email_message, 'text/html')
+        try:
+            msg.send()
+        except:
+            print('Спам')
+
+    # def form_valid(self, form):
+    #     title = form.cleaned_data['title']
+    #     text = form.cleaned_data['text'][:50]
+    #     subscribers_data = dict()
+    #     for category in form.cleaned_data['category']:
+    #         subscribers = category.subscribers.all()
+    #         for user in subscribers:
+    #             if user.username not in subscribers_data:
+    #                 subscribers_data[user.username] = user.email
+    #     for username, email in subscribers_data.items():
+    #         self.send_message(username, email, title, text)
+    #     return super().form_valid(form)
 
 class PostDeleteView(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     permission_required = ('auth.authors')
@@ -90,14 +150,16 @@ class PostUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     fields = ('title', 'text')
     success_url = reverse_lazy(viewname='news')
 
-class NewsDetail(LoginRequiredMixin, ListView):
+class NewsDetail(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'news.html'
-    context_object_name = 'news'
+    context_object_name = 'news_d'
 
     def get_queryset(self):
         return Post.objects.filter(categoryType='NW')  # показываем только новости
-
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(self.get_queryset(), pk=pk)
 
 class PostSearch(LoginRequiredMixin, ListView):
     model = Post
@@ -129,3 +191,43 @@ def upgrade_me(request):
        Author.objects.create(authorUser=user)
        premium_group.save()
    return redirect('/news')
+
+@login_required
+def subscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(pk=pk)
+    print(DEFAULT_FROM_EMAIL)
+    if not category.subscribers.filter(id=user.id).exists():
+        print('here2')
+        email = user.email
+        category.subscribers.add(user)
+        html = render_to_string(
+            template_name='new_post_email_notification.html',
+            context={
+                'categories': category,
+                'user': user
+            }
+        )
+        print(html)
+        msg = EmailMultiAlternatives(
+            subject=f'{category} subscription',
+            body='',
+            from_email=DEFAULT_FROM_EMAIL,
+            to=[email,]
+        )
+        msg.attach_alternative(html, 'text/html')
+        try:
+            msg.send()
+        except Exception as e:
+            print(e)
+        return redirect('/news')
+    
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def unsubscribe(request, pk):
+    user = request.user
+    c = Category.objects.get(id=pk)
+    if c.subscribers.filter(id=user.id).exists():
+        c.subscribers.remove(user)
+    return redirect('/about')

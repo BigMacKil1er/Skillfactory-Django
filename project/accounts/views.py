@@ -4,6 +4,8 @@ from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.views.generic.edit import CreateView
+
+from news.tasks.User_greeting import greeting
 from .forms import RegisterForm, LoginForm
 
 
@@ -18,6 +20,8 @@ class RegisterView(CreateView):
        group = Group.objects.get_or_create(name='common')[0]
        user.groups.add(group)
        user.save()
+       greeting(user)
+       print('done')
        return super().form_valid(form)
 
 class LoginView(FormView):

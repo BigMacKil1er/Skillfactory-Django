@@ -1,0 +1,21 @@
+{% extends 'flatpages/default.html' %}
+{% block title %}
+Category
+{% endblock title %}
+
+{% block content %}
+{% if category.id %}
+    <div>
+        <em>
+            Subscribe to
+            <strong>{{ category }}</strong>
+        </em>
+        <a class="btn btn-info" href="{% url 'subscribe' category.id %}">
+            Subscribe
+        </a>
+    </div>
+{% else %}
+<p>Вы уже подписаны</p>
+{% endif %}
+{% comment %} {% include 'newslist.html' %} {% endcomment %}
+{% endblock content %}

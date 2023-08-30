@@ -10,11 +10,17 @@
 {% block content %}
 <h1>Новость</h1>
 <h2>Заголовок</h2>
-<p>{{ news.title|censor }}</p>
+<p>{{ news_d.title|censor }}</p>
 <h2>Дата публикации</h2>
-<p>{{ news.dateCreation|date:'d.m.Y h:m' }}</p>
+<p>{{ news_d.dateCreation|date:'d.m.Y h:m' }}</p>
 <h2>Текст</h2>
-<p>{{ news.text|censor }}</p>
+<p>{{ news_d.text|censor }}</p>
 <h2>Автор</h2>
-<p>{{ news.author.authorUser }}</p>
+<p>{{ news_d.author.authorUser }}</p>
+<h2>Категории</h2>
+{% for c in news_d.postCategory.values %}
+<a class="btn btn-info" href="{% url 'category' c.id %}">
+    {{c.name}}
+</a>
+{% endfor %}
 {% endblock content %}

@@ -48,12 +48,15 @@
             </tbody>
         </table>
         {% if not is_not_author %}<a class="btn btn-primary" href="{% url 'new_post' %}">Create Post</a>{% endif %}
-    
+        {{category}}
+        {% comment %} <a class="btn btn-primary" href="{% url 'subscribe' category.id %}">Subscribe</a> {% endcomment %}
+        
+        {% comment %} <a class="btn btn-primary" href="{% url 'subscribe' %}">Subscribe to news</a> {% endcomment %}
     {% else %}
         <div class="alert alert-info">
             <h2>Новостей нет!</h2>
         </div>
-
+        {% if not is_not_author %}<a class="btn btn-primary" href="{% url 'new_post' %}">Create Post</a>{% endif %}
     {% endif %}
 {% if is_paginated %}
 
