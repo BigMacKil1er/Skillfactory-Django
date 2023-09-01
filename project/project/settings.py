@@ -179,3 +179,10 @@ EMAIL_HOST_USER = 'artjom.varibrus' # ваше имя пользователя, 
 EMAIL_USE_SSL = True # Яндекс использует ssl, подробнее о том, что это, почитайте на Википедии, но включать его здесь обязательно
 
 EMAIL_HOST_PASSWORD = dotenv_data.get('EMAIL_HOST_PASSWORD')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'), # Указываем, куда будем сохранять кэшируемые файлы! Не забываем создать папку cache_files внутри папки с manage.py!
+    }
+}

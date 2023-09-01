@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load cache %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -28,9 +28,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
+                        {% cache 20 nav %}
                         <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
                         <li class="nav-item"><a class="nav-link" href="/news">News</a></li>
                         <li class="nav-item"><a class="nav-link" href="/accounts/logout/">Logout</a></li>
+                        {% endcache %}
                     </ul>
                 </div>
             </div>

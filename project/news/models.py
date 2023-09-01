@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
-
+from django.core.cache import cache
 
 class Author(models.Model):
     authorUser = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -55,7 +55,9 @@ class Post(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
-
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs) 
+        cache.delete(f'post_{self.pk}')
     def preview(self):
         return self.text[0:120] + '...'
 

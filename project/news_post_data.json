@@ -1,0 +1,1 @@
+[{"model": "news.post", "pk": 39, "fields": {"author": 7, "categoryType": "NW", "dateCreation": "2023-08-30T12:56:04.022Z", "title": "edgedg", "text": "asfsafasfasAAAaaAtttteeee", "rating": 0}}, {"model": "news.post", "pk": 40, "fields": {"author": 7, "categoryType": "NW", "dateCreation": "2023-08-30T12:58:04.205Z", "title": "asfasf", "text": "sfaddddqqqqaaaaaqqq", "rating": 0}}]

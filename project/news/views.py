@@ -19,7 +19,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-
+from django.core.cache import cache
 DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
 class AuthorsList(LoginRequiredMixin, ListView):
@@ -121,18 +121,6 @@ class PostCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
         except:
             print('Спам')
 
-    # def form_valid(self, form):
-    #     title = form.cleaned_data['title']
-    #     text = form.cleaned_data['text'][:50]
-    #     subscribers_data = dict()
-    #     for category in form.cleaned_data['category']:
-    #         subscribers = category.subscribers.all()
-    #         for user in subscribers:
-    #             if user.username not in subscribers_data:
-    #                 subscribers_data[user.username] = user.email
-    #     for username, email in subscribers_data.items():
-    #         self.send_message(username, email, title, text)
-    #     return super().form_valid(form)
 
 class PostDeleteView(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     permission_required = ('auth.authors')
@@ -150,6 +138,7 @@ class PostUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     fields = ('title', 'text')
     success_url = reverse_lazy(viewname='news')
 
+
 class NewsDetail(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'news.html'
@@ -159,7 +148,14 @@ class NewsDetail(LoginRequiredMixin, DetailView):
         return Post.objects.filter(categoryType='NW')  # показываем только новости
     def get_object(self, queryset=None):
         pk = self.kwargs.get('pk')
-        return get_object_or_404(self.get_queryset(), pk=pk)
+        cache_key = f'post_{pk}'
+        cached_post = cache.get(cache_key)
+        if cached_post is None:
+            post = get_object_or_404(Post.objects.filter(categoryType='NW'), pk=pk)
+            cache.set(cache_key, post)
+            return post
+        else:
+            return cached_post
 
 class PostSearch(LoginRequiredMixin, ListView):
     model = Post
