@@ -1,0 +1,9 @@
+2023-09-01 15:44:05,615 INFO autoreload Watching for file changes with StatReloader
+2023-09-01 15:45:19,277 INFO autoreload C:\Users\BigmacKiller\Documents\GitHub\Skillfactory-Django\project\news\urls.py changed, reloading.
+2023-09-01 15:45:19,971 INFO autoreload Watching for file changes with StatReloader
+2023-09-01 15:45:31,544 INFO autoreload C:\Users\BigmacKiller\Documents\GitHub\Skillfactory-Django\project\news\urls.py changed, reloading.
+2023-09-01 15:45:32,286 INFO autoreload Watching for file changes with StatReloader
+2023-09-01 15:48:43,113 INFO autoreload C:\Users\BigmacKiller\Documents\GitHub\Skillfactory-Django\project\project\settings.py changed, reloading.
+2023-09-01 15:48:43,837 INFO autoreload Watching for file changes with StatReloader
+2023-09-01 15:48:52,237 INFO autoreload C:\Users\BigmacKiller\Documents\GitHub\Skillfactory-Django\project\project\settings.py changed, reloading.
+2023-09-01 15:48:52,876 INFO autoreload Watching for file changes with StatReloader

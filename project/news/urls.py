@@ -7,7 +7,7 @@ from .views import NewsList, NewsDetail, AuthorsList, AuthorDetail, PostSearch, 
 urlpatterns = [
     path('authors/', AuthorsList.as_view()),
     path('authors/<int:pk>', AuthorDetail.as_view()),
-    path('news/', cache_page(60)(NewsList.as_view()), name='news'),
+    path('news/', NewsList.as_view(), name='news'),
     path('news/<int:pk>/', NewsDetail.as_view(), name='news_detail'),
     path('search/', PostSearch.as_view(), name='search'),
     path('create/', PostCreateView.as_view(), name='new_post'),
