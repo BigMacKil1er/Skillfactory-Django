@@ -1,0 +1,35 @@
+{% extends 'flatpages/main.html' %}
+{% block title %}
+Главная
+{% endblock title %}
+
+{% block content %}
+<h1>Главная</h1>
+    {% for post in postlist %}
+
+<div class="container mt-5 col-md-4 mb-3">
+    <div class="card card-sm" style="width: 18rem;">
+        <!-- Заголовок карточки -->
+        <div class="card-header text-dark">
+           {{ post.title }}
+        </div>
+        <div class="card-body">
+            <!-- Автор поста -->
+            <h5 class="card-title text-dark mb-0"><strong>Автор:</strong> {{post.author }}</h5>
+            <!-- Текст поста -->
+            <p class="card-text text-dark mb-1"><strong>Описание:</strong>{{ post.text }}</p>
+            <!-- Категория поста -->
+            <p class="card-text text-dark mb-1"><strong>Категория:</strong>  {{post.category}}</p>
+            <p class="card-text text-dark mb-1"><strong>Дата:</strong> {{post.date_creation}}</p>
+            <!-- Фото или видео поста -->
+            <div class="embed-responsive embed-responsive-16by9">
+                <!-- Здесь разместите ваше фото или видео -->
+                <img src="путь_к_изображению_или_видео" class="card-img-top" alt="Фото или видео">
+            </div>
+        </div>
+    </div>
+</div>
+    {% endfor %}
+ 
+
+{% endblock content %}
