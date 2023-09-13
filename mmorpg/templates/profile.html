@@ -1,0 +1,77 @@
+{% extends 'flatpages/main.html' %}
+
+{% block title %}
+Профиль
+{% endblock title %}
+
+{% block content %}
+    <h1>Отклики на ваши объявления {{ request.user.first_name }} {{ request.user.last_name }}</h1>
+    <hr>
+    {% if responses %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Заголовок</th>
+                    <th>Дата публикации</th>
+                    <th>Текст</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for response in responses %}
+                    <tr>
+                        <td><a href="{% url 'detail' response.advertisement_id %}"><p>{{ response.text }}</p></a></td>
+                        <td>{{ response.created_at|date:'d.m.Y H:i' }}</td>
+                        <td>{{ response.advertisement_id }}</td>
+                        <td>
+                            <form method="post" action="{% url 'delete_response' response.id %}">
+                                {% csrf_token %}
+                                <input type="submit" value="Удалить">
+                              </form>
+
+                        </td>
+                        <td align="left">
+                            {% if not response.accepted %}
+                                <form method="post" action="{% url 'accept_response' response.id %}">
+                                    {% csrf_token %}
+                                <input type="submit" value="Принять">
+                                </form>
+                            {% else %}
+                            <p>Принято</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">
+            <h2>Новостей нет!</h2>
+        </div>
+        {% if not is_not_author %}<a class="btn btn-primary" href="{% url 'new_post' %}">Create Post</a>{% endif %}
+    {% endif %}
+{% if is_paginated %}
+
+    <!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+    {% endif %}
+
+    <!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a>{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    <!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">>>></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+
+{% endif %}
+
+{% endblock content %}

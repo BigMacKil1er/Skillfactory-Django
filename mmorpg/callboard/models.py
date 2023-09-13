@@ -5,15 +5,6 @@ class UserBoard(models.Model):
     author = models.OneToOneField(User, on_delete=models.CASCADE)
     def __str__(self):
         return f'{self.author.username.title()}'
-# class UserSubscriber(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-#     category = models.ForeignKey('Category', on_delete=models.DO_NOTHING)
-
-# class Category(models.Model):
-#     name = models.CharField(max_length=64, unique=True)
-#     subscribers = models.ManyToManyField(UserBoard, through=UserSubscriber, blank=True)
-#     def __str__(self):
-#         return self.name
 
 class Advertisement(models.Model):
     author = models.ForeignKey(UserBoard, on_delete=models.CASCADE)
@@ -35,12 +26,9 @@ class Advertisement(models.Model):
     date_creation = models.DateTimeField(auto_now_add=True)
 
 def user_directory_path(instance, filename):
-    user = instance.advertisement.user
-
-    # Генерируем путь для сохранения файла: media_content/имя_пользователя/имя_файла
+    user = instance.advertisement.author
     return f'media_content/{user}/{filename}'
 
-# Модель для медиа-контента в объявлениях
 class MediaContent(models.Model):
     advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE)
     media_type_choices = [
@@ -49,7 +37,11 @@ class MediaContent(models.Model):
         ('other', 'Другое'),
     ]
     media_type = models.CharField(max_length=10, choices=media_type_choices)
-    file = models.FileField(upload_to=user_directory_path)
+    media_file = models.FileField(upload_to=user_directory_path)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.get_media_type_display()} for {self.advertisement.title}"
 
 class UserResponse(models.Model):
     advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE)

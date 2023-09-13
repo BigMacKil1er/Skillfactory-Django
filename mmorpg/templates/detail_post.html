@@ -1,0 +1,28 @@
+{% extends 'flatpages/main.html' %}
+{% block title %}
+Новость
+{% endblock title %}
+
+{% block content %}
+{% if post.author.author_id == request.user.id %}
+    <a class="btn btn-primary" href="{% url 'edit' post.pk %}">Редактировать пост</a>
+    <a class="btn btn-danger" href="{% url 'delete' post.pk %}">Удалить пост</a>
+{% endif %}
+<h1>Объявление</h1>
+<h2>Заголовок</h2>
+<p>{{ post.title }}</p>
+<h2>Дата публикации</h2>
+<p>{{ post.date_creation|date:'d.m.Y h:m' }}</p>
+<h2>Текст</h2>
+<p>{{ post.text }}</p>
+{% if post.media_content.media_file %}
+    <img src="media_content/{{post.media_content.media_file}}" class="card-img-top" alt="Фото или видео" style="width: 500px;">
+{% endif %}
+<h2>Автор</h2>
+<p>{{ post.author}}</p>
+<h2>Категории</h2>
+<p>{{ post.category }}</p>
+{% if not post.author.author_id == request.user.id %}
+    <a class="btn btn-success" href="{% url 'response' post.pk %}">Откликнуться</a>
+{% endif %}
+{% endblock content %}

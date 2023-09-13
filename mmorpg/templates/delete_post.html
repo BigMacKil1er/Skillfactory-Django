@@ -1,0 +1,38 @@
+{% extends 'flatpages/main.html' %}
+
+{% block title %} Удаление объявления {% endblock title %}
+
+{% block content %}
+{% if edit_post.author.author_id == request.user.id %}
+<h3>Удаление поста</h3>
+<form method="POST" action="">
+    {% csrf_token %}
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Author</th>
+                <th scope="col">Title</th>
+                <th scope="col">Text</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ object.author  }}</td>
+                <td>{{ object.title }}</td>
+                <td>{{ object.text }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>Вы действительно хотите удалить объявление "{{ object.title }}" от {{ delete_post.date_creation|date:'d.m.Y' }}?</p>
+    <input class="btn btn-danger" type="submit" value="Удалить" />
+</form>
+
+{% else %}
+    {% url 'home' as redirect_url %}
+    {% if redirect_url %}
+        <script>window.location.href = "{{ redirect_url }}";</script>
+    {% endif %}
+
+{% endif %}
+
+{% endblock content %}

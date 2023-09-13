@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New news for the week</title>
+</head>
+<body>
+    <h2>{{ username }}, the last 10 news from the categories you are subscribed to.</h2>
+    {% for post in posts %}
+    <a href="http://127.0.0.1:8000{% url 'detail' post.id %}">{{post.title}}</a>
+    <br>
+    {% endfor %}
+</body>
+</html>

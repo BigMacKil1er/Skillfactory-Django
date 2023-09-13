@@ -37,8 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
-    'callboard'
+    'callboard',
+    'accounts',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -71,7 +78,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mmorpg.wsgi.application'
 
+AUTHENTICATION_BACKENDS = [
+   # Needed to login by username in Django admin, regardless of `allauth`
+   'django.contrib.auth.backends.ModelBackend',
+  
+   # `allauth` specific authentication methods, such as login by e-mail
+   'allauth.account.auth_backends.AuthenticationBackend',
+]
 
+LOGIN_URL = '/accounts/login/'
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+EMAIL_HOST = 'smtp.yandex.ru' # адрес сервера Яндекс-почты для всех один и тот же
+EMAIL_PORT = 465 # порт smtp сервера тоже одинаковый
+
+EMAIL_HOST_USER = '' # ваше имя пользователя, например если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
+EMAIL_USE_SSL = True # Яндекс использует ssl, подробнее о том, что это, почитайте на Википедии, но включать его здесь обязательно
+DEFAULT_FROM_EMAIL = ''
+EMAIL_HOST_PASSWORD = ''
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -127,3 +156,11 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = 'media_content/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_content')
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+ 
+# если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds

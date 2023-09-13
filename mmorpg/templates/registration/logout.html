@@ -1,0 +1,10 @@
+{% extends 'flatpages/main.html' %}
+
+{% block title %}
+Log in
+{% endblock title %}
+
+{% block content %}
+<h2> Вы вышли из системы </h2>
+ {% csrf_token %}
+{% endblock content %}

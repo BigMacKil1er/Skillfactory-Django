@@ -1,0 +1,22 @@
+{% extends 'flatpages/main.html' %}
+
+{% block title %} Редактирование объявления {% endblock title %}
+
+{% block content %}
+
+{% if edit_post.author.author_id == request.user.id %}
+<h3>Редактирование поста</h3>
+<form method="POST" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{media_content_form.as_p}}
+    <input type="submit" value="Сохранить" />
+</form>
+{% else %}
+{% url 'home' as redirect_url %}
+{% if redirect_url %}
+    <script>window.location.href = "{{ redirect_url }}";</script>
+{% endif %}
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,23 @@
+
+{% extends 'flatpages/main.html' %}
+
+{% block content %}
+  <h1>{{ advertisement.title }}</h1>
+  <p>{{ advertisement.text }}</p>
+
+  <h2>Отклики:</h2>
+  <ul>
+    {% for response in responses %}
+      <li>{{ response.user }} написал(а) {{ response.created_at }}:<br>{{ response.text }}</li>
+    {% empty %}
+      <li>Пока нет откликов.</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Оставить отклик:</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ response_form.as_p }}
+    <input type="submit" value="Отправить">
+  </form>
+{% endblock %}
